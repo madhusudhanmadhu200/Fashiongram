@@ -3,6 +3,12 @@ import User from "../models/User.js";
 
 const router = express.Router();
 
+/* ✅ HEALTH CHECK */
+router.get( "/test", ( req, res ) => {
+    res.json( { message: "API is working" } );
+} );
+
+/* ⚠️ DEV ONLY - CREATE TEST USER */
 router.get( "/create-test-user", async ( req, res ) => {
     try {
         const newUser = await User.create( {

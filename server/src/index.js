@@ -19,6 +19,7 @@ const app = express();
 
 app.use( cors() );
 app.use( express.json() );
+app.use( "/api", testRoutes );
 app.use( "/api/test", testRoutes );
 app.use( "/api/auth", authRoutes );
 app.use( "/api/posts", postRoutes );
