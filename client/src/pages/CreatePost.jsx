@@ -111,6 +111,7 @@ class CreatePost extends Component {
                             />
                         </label>
                     ) }
+                    
 
                     {/* IMAGE PREVIEW */ }
                     { this.state.preview && (
@@ -150,6 +151,14 @@ class CreatePost extends Component {
                             ) ) }
                         </div>
                     ) }
+                    <ul>
+                        <li>Step 1: Upload an image</li>
+                        <li>Step 2: Click anywhere on the image where the item appears</li>
+                        <li>Step 3: Enter the item name (e.g. Shirt, Shoes)</li>
+                        <li>Step 4: Paste the product link</li>
+                        <li>Step 5: Repeat for multiple items</li>
+                        <li>Step 6: Click Post</li>
+                    </ul>
 
                     {/* CAPTION */ }
                     <textarea
