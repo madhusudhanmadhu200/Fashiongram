@@ -202,7 +202,6 @@ class Feed extends Component {
                                 ) ) }
                             </div>
 
-                            //COMMENTS
                             <div style={ { display: "flex", marginTop: "6px" } }>
                                 <input
                                     type="text"
