@@ -85,6 +85,9 @@ router.post( "/forgot-password", async ( req, res ) => {
         user.resetOtp = await bcrypt.hash( otp, 10 );
         user.resetOtpExpiry = Date.now() + 5 * 60 * 1000; // 5 mins
         await user.save();
+        await transporter.verify();
+        console.log( "SMTP ready" );
+
 
         await sendEmail(
             email,
@@ -125,6 +128,8 @@ router.post( "/reset-password", async ( req, res ) => {
         res.status( 500 ).json( { message: "Password reset failed" } );
     }
 } );
+console.log( "EMAIL_USER:", process.env.EMAIL_USER );
+console.log( "EMAIL_PASS exists:", !!process.env.EMAIL_PASS );
 
 
 
