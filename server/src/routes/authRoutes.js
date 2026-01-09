@@ -75,22 +75,21 @@ router.post( "/login", async ( req, res ) => {
 router.post( "/forgot-password", async ( req, res ) => {
     try {
         const { email } = req.body;
+        console.log( "Forgot password request for:", email );
 
         const user = await User.findOne( { email } );
-        if ( !user )
+        if ( !user ) {
             return res.status( 404 ).json( { message: "User not found" } );
+        }
 
         const otp = Math.floor( 100000 + Math.random() * 900000 ).toString();
 
         user.resetOtp = await bcrypt.hash( otp, 10 );
         user.resetOtpExpiry = Date.now() + 5 * 60 * 1000; // 5 mins
         await user.save();
-        await transporter.verify();
-        console.log( "SMTP ready" );
-
 
         await sendEmail(
-            email,
+            user.email,
             "Fashiongram Password Reset OTP",
             `Your OTP is ${ otp }. It is valid for 5 minutes.`
         );
@@ -128,8 +127,7 @@ router.post( "/reset-password", async ( req, res ) => {
         res.status( 500 ).json( { message: "Password reset failed" } );
     }
 } );
-console.log( "EMAIL_USER:", process.env.EMAIL_USER );
-console.log( "EMAIL_PASS exists:", !!process.env.EMAIL_PASS );
+
 
 
 

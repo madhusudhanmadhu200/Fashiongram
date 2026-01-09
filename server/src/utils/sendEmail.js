@@ -9,7 +9,7 @@ const transporter = nodemailer.createTransport( {
 } );
 const sendEmail = async ( to, subject, text ) => {
     await transporter.sendMail( {
-        from: `"Fashiongram" <${ process.env.EMAIL_USER }>`,
+        from: process.env.EMAIL_USER, // IMPORTANT: keep simple
         to,
         subject,
         text,
