@@ -113,7 +113,9 @@ router.post( "/reset-password", async ( req, res ) => {
         if ( user.resetOtpExpiry < Date.now() )
             return res.status( 400 ).json( { message: "OTP expired" } );
 
-        const isValid = await bcrypt.compare( otp, user.resetOtp );
+        const cleanOtp = String( otp ).trim();
+        const isValid = await bcrypt.compare( cleanOtp, user.resetOtp );
+
         if ( !isValid )
             return res.status( 400 ).json( { message: "Invalid OTP" } );
 

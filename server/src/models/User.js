@@ -7,26 +7,19 @@ const userSchema = new mongoose.Schema(
         password: { type: String, required: true },
         avatarUrl: { type: String, default: "" },
         bio: { type: String, default: "" },
-        followers: [ { type: mongoose.Schema.Types.ObjectId, ref: "User" } ],
-        following: [ { type: mongoose.Schema.Types.ObjectId, ref: "User" } ],
+
         followers: [
-            {
-                type: mongoose.Schema.Types.ObjectId,
-                ref: "User",
-            },
+            { type: mongoose.Schema.Types.ObjectId, ref: "User" }
+        ],
+        following: [
+            { type: mongoose.Schema.Types.ObjectId, ref: "User" }
         ],
 
-        following: [
-            {
-                type: mongoose.Schema.Types.ObjectId,
-                ref: "User",
-            },
-        ],
         resetOtp: String,
         resetOtpExpiry: Date,
-
     },
     { timestamps: true }
 );
+
 
 export default mongoose.model( "User", userSchema );
