@@ -33,7 +33,7 @@ class CreatePost extends Component {
         const x = ( ( e.clientX - rect.left ) / rect.width ) * 100;
         const y = ( ( e.clientY - rect.top ) / rect.height ) * 100;
 
-        const label = prompt( "Item name (Shirt / Jeans / Shoes/ Jewellery etc..)" );
+        const label = prompt( "Item name (Shirt / Shoes / Watch etc)" );
         const link = prompt( "Product buy link" );
 
         if ( !label || !link ) return;
@@ -45,6 +45,7 @@ class CreatePost extends Component {
 
     handleSubmit = async ( e ) => {
         e.preventDefault();
+
         if ( !this.state.image ) {
             return this.setState( { error: "Image is required" } );
         }
@@ -80,136 +81,115 @@ class CreatePost extends Component {
         if ( this.state.redirect ) return <Navigate to="/feed" />;
 
         return (
-            <div
-                style={ {
-                    maxWidth: "420px",
-                    margin: "0 auto",
-                } }
-            >
-                <h2 style={ { marginBottom: "12px" } }>Create Post</h2>
+            <div className="container mt-4" style={ { maxWidth: "520px" } }>
+                <div className="card shadow-sm border-0 rounded-4">
+                    <div className="card-body p-4">
+                        <h4 className="text-center mb-3">Create Post</h4>
+                        <p style={ { fontStyle: "italic" } }>Max Size: 5MB</p>
 
-                <form onSubmit={ this.handleSubmit }>
-                    {/* IMAGE UPLOAD */ }
-                    { !this.state.preview && (
-                        <label
-                            style={ {
-                                display: "block",
-                                border: "2px dashed #ccc",
-                                borderRadius: "14px",
-                                padding: "24px",
-                                textAlign: "center",
-                                cursor: "pointer",
-                                marginBottom: "12px",
-                            } }
-                        >
-                            📸 Click to upload image
-                            <input
-                                type="file"
-                                accept="image/*"
-                                hidden
-                                onChange={ this.handleImageChange }
-                            />
-                        </label>
-                    ) }
-                    
+                        <form onSubmit={ this.handleSubmit }>
+                            {/* IMAGE UPLOAD */ }
+                            { !this.state.preview && (
+                                <label
+                                    className="d-flex flex-column align-items-center justify-content-center border border-2 border-dashed rounded-4 p-4 text-muted"
+                                    style={ { cursor: "pointer" } }
+                                >
+                                    <div style={ { fontSize: "32px" } }>📸</div>
+                                    <div className="mt-2 fw-semibold">
+                                        Click to upload image
+                                    </div>
 
-                    {/* IMAGE PREVIEW */ }
-                    { this.state.preview && (
-                        <div
-                            style={ {
-                                position: "relative",
-                                borderRadius: "14px",
-                                overflow: "hidden",
-                                marginBottom: "12px",
-                            } }
-                        >
-                            <img
-                                src={ this.state.preview }
-                                alt="preview"
-                                style={ { width: "100%", display: "block" } }
-                                onClick={ this.handleImageClick }
-                            />
+                                    <input
+                                        type="file"
+                                        accept="image/*"
+                                        hidden
+                                        onChange={ this.handleImageChange }
+                                    />
+                                </label>
+                            ) }
 
-                            {/* TAG DOTS */ }
-                            { this.state.tags.map( ( tag, i ) => (
+                            {/* IMAGE PREVIEW */ }
+                            { this.state.preview && (
                                 <div
-                                    key={ i }
-                                    title={ tag.label }
-                                    style={ {
-                                        position: "absolute",
-                                        top: `${ tag.y }%`,
-                                        left: `${ tag.x }%`,
-                                        width: "14px",
-                                        height: "14px",
-                                        background: "#fff",
-                                        borderRadius: "50%",
-                                        border: "2px solid #000",
-                                        transform: "translate(-50%, -50%)",
-                                        boxShadow: "0 3px 8px rgba(0,0,0,0.25)",
-                                    } }
-                                />
-                            ) ) }
-                        </div>
-                    ) }
-                    <ul>
-                        <li>Step 1: Upload an image</li>
-                        <li>Step 2: Click anywhere on the image where the item appears</li>
-                        <li>Step 3: Enter the item name (e.g. Shirt, Shoes)</li>
-                        <li>Step 4: Paste the product link</li>
-                        <li>Step 5: Repeat for multiple items</li>
-                        <li>Step 6: Click Post</li>
-                    </ul>
+                                    className="position-relative rounded-4 overflow-hidden mb-3 mt-2"
+                                    style={ { cursor: "crosshair" } }
+                                >
+                                    <img
+                                        src={ this.state.preview }
+                                        alt="preview"
+                                        className="w-100"
+                                        onClick={ this.handleImageClick }
+                                    />
 
-                    {/* CAPTION */ }
-                    <textarea
-                        placeholder="Write a caption..."
-                        value={ this.state.caption }
-                        onChange={ this.handleCaptionChange }
-                        rows={ 3 }
-                        style={ {
-                            width: "100%",
-                            border: "1px solid #e5e5e5",
-                            borderRadius: "10px",
-                            padding: "10px",
-                            fontSize: "14px",
-                            resize: "none",
-                            marginBottom: "10px",
-                        } }
-                    />
+                                    { this.state.tags.map( ( tag, i ) => (
+                                        <span
+                                            key={ i }
+                                            title={ tag.label }
+                                            style={ {
+                                                position: "absolute",
+                                                top: `${ tag.y }%`,
+                                                left: `${ tag.x }%`,
+                                                width: "14px",
+                                                height: "14px",
+                                                background: "#fff",
+                                                borderRadius: "50%",
+                                                border: "2px solid #000",
+                                                transform: "translate(-50%, -50%)",
+                                                boxShadow: "0 3px 8px rgba(0,0,0,0.25)",
+                                            } }
+                                        />
+                                    ) ) }
+                                </div>
+                            ) }
 
-                    {/* TAG INFO */ }
-                    { this.state.tags.length > 0 && (
-                        <p style={ { fontSize: "12px", color: "#666" } }>
-                            { this.state.tags.length } item(s) tagged
-                        </p>
-                    ) }
+                            {/* INSTRUCTIONS */ }
+                            <div className="bg-light rounded-3 p-3 small mb-3">
+                                <div className="fw-semibold mb-1">
+                                    How to tag products
+                                </div>
+                                <ol className="mb-0 ps-3">
+                                    <li>Upload an image</li>
+                                    <li>Click on the item in the image</li>
+                                    <li>Enter item name</li>
+                                    <li>Paste product link</li>
+                                    <li>Repeat for multiple items</li>
+                                </ol>
+                            </div>
 
-                    {/* ERROR */ }
-                    { this.state.error && (
-                        <p style={ { color: "#e63946", fontSize: "13px" } }>
-                            { this.state.error }
-                        </p>
-                    ) }
+                            {/* CAPTION */ }
+                            <textarea
+                                className="form-control mb-2"
+                                placeholder="Write a caption..."
+                                rows={ 3 }
+                                value={ this.state.caption }
+                                onChange={ this.handleCaptionChange }
+                            />
 
-                    {/* SUBMIT */ }
-                    <button
-                        type="submit"
-                        disabled={ this.state.loading }
-                        style={ {
-                            width: "100%",
-                            background: "#000",
-                            color: "#fff",
-                            padding: "12px",
-                            borderRadius: "10px",
-                            border: "none",
-                            fontWeight: "600",
-                            cursor: "pointer",
-                            opacity: this.state.loading ? 0.7 : 1,
-                        } }
-                    >
-                        { this.state.loading ? "Posting..." : "Share Post" }
-                    </button>
-                </form>
+                            {/* TAG COUNT */ }
+                            { this.state.tags.length > 0 && (
+                                <div className="small text-muted mb-2">
+                                    { this.state.tags.length } item(s) tagged
+                                </div>
+                            ) }
+
+                            {/* ERROR */ }
+                            { this.state.error && (
+                                <div className="text-danger small mb-2">
+                                    { this.state.error }
+                                </div>
+                            ) }
+
+                            {/* SUBMIT */ }
+                            <button
+                                type="submit"
+                                className="btn btn-dark w-100 rounded-pill"
+                                disabled={ this.state.loading }
+                            >
+                                { this.state.loading ? "Posting..." : "Share Post" }
+                            </button>
+                        </form>
+                    </div>
+                </div>
             </div>
         );
     }

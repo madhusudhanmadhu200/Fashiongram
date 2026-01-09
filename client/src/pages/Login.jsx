@@ -108,7 +108,25 @@ class Login extends Component {
                             fontSize: "14px",
                         } }
                     />
-                    <Link to="/forgot-password">Forgot password?</Link>
+                    <Link
+                        to="/forgot-password"
+                        style={ {
+                            display: "block",
+                            marginTop: "14px",
+                            marginBottom: "14px",
+                            textAlign: "left",
+                            color: "#0095f6",
+                            fontSize: "16px",
+                            fontWeight: "500",
+                            textDecoration: "none",
+                            cursor: "pointer",
+                        } }
+                        onMouseOver={ ( e ) => ( e.target.style.textDecoration = "underline" ) }
+                        onMouseOut={ ( e ) => ( e.target.style.textDecoration = "none" ) }
+                    >
+                        Forgot password?
+                    </Link>
+
 
 
                     {/* ERROR */ }
@@ -148,7 +166,7 @@ class Login extends Component {
                 <p
                     style={ {
                         textAlign: "center",
-                        fontSize: "13px",
+                        fontSize: "16px",
                         marginTop: "14px",
                         color: "#666",
                     } }

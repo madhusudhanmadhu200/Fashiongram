@@ -106,52 +106,44 @@ class Feed extends Component {
     };
 
     render() {
-        if ( this.state.loading ) return <p>Loading feed...</p>;
-        if ( this.state.error ) return <p>{ this.state.error }</p>;
+        const { posts, loading, error, hoveredPost } = this.state;
+
+        if ( loading ) return <p className="text-center mt-5">Loading feed...</p>;
+        if ( error ) return <p className="text-center text-danger">{ error }</p>;
 
         return (
-            <div>
+            <div className="container mt-4" style={ { maxWidth: "600px" } }>
                 <UserSearch />
-                { this.state.posts.map( ( post ) => (
-                    <div
-                        key={ post._id }
-                        style={ {
-                            border: "1px solid #e5e5e5",
-                            borderRadius: "14px",
-                            marginBottom: "24px",
-                            overflow: "hidden",
-                            background: "#fff",
-                        } }
-                    >
+
+                { posts.map( ( post ) => (
+                    <div key={ post._id } className="card mb-4 shadow-sm border-0 rounded-4">
                         {/* HEADER */ }
-                        <div style={ { padding: "10px", fontWeight: 600 } }>
+                        <div className="card-header bg-white border-0 d-flex align-items-center">
                             <Link
                                 to={ `/profile/${ post.author._id }` }
-                                style={ { textDecoration: "none", color: "#000" } }
+                                className="fw-semibold text-dark text-decoration-none"
                             >
                                 { post.author.username }
                             </Link>
                         </div>
 
-                        {/* IMAGE + TAGS */ }
+                        {/* IMAGE */ }
                         <div
-                            style={ { position: "relative" } }
-                            onMouseEnter={ () =>
-                                this.setState( { hoveredPost: post._id } )
-                            }
-                            onMouseLeave={ () =>
-                                this.setState( { hoveredPost: null } )
-                            }
+                            className="position-relative"
+                            onMouseEnter={ () => this.setState( { hoveredPost: post._id } ) }
+                            onMouseLeave={ () => this.setState( { hoveredPost: null } ) }
                         >
                             <img
                                 src={ post.imageUrl }
                                 alt=""
-                                style={ { width: "100%", display: "block" } }
+                                className="w-100"
+                                style={ { objectFit: "cover", maxHeight: "500px" } }
                             />
 
-                            { this.state.hoveredPost === post._id &&
+                            {/* TAG DOTS */ }
+                            { hoveredPost === post._id &&
                                 post.tags.map( ( tag, i ) => (
-                                    <div
+                                    <span
                                         key={ i }
                                         onClick={ () =>
                                             this.handleTagClick( post._id, i, tag.link )
@@ -167,8 +159,6 @@ class Feed extends Component {
                                             borderRadius: "50%",
                                             border: "2px solid #000",
                                             transform: "translate(-50%, -50%)",
-                                            boxShadow:
-                                                "0 3px 10px rgba(0,0,0,0.25)",
                                             cursor: "pointer",
                                         } }
                                     />
@@ -176,64 +166,45 @@ class Feed extends Component {
                         </div>
 
                         {/* ACTIONS */ }
-                        <div style={ { padding: "10px" } }>
+                        <div className="card-body pt-2">
                             <button
                                 onClick={ () => this.handleLike( post._id ) }
-                                style={ {
-                                    background: "none",
-                                    border: "none",
-                                    fontSize: "18px",
-                                    cursor: "pointer",
-                                } }
+                                className="btn btn-light p-0 mb-2"
                             >
-                                ❤️ { post.likes.length }
+                                <i className="bi bi-heart-fill text-danger fs-5"></i>{ " " }
+                                <span className="ms-1">{ post.likes.length }</span>
                             </button>
 
-                            <p style={ { fontSize: "14px", marginTop: "6px" } }>
-                                <b>{ post.author.username }</b> { post.caption }
+                            <p className="mb-1">
+                                <strong>{ post.author.username }</strong>{ " " }
+                                <span className="text-muted">{ post.caption }</span>
                             </p>
 
                             {/* COMMENTS */ }
-                            <div style={ { fontSize: "13px" } }>
+                            <div className="small text-muted">
                                 { post.comments.map( ( c, i ) => (
-                                    <p key={ i }>
-                                        <b>{ c.user.username }</b> { c.text }
-                                    </p>
+                                    <div key={ i }>
+                                        <strong className="text-dark">
+                                            { c.user.username }
+                                        </strong>{ " " }
+                                        { c.text }
+                                    </div>
                                 ) ) }
                             </div>
 
-                            <div style={ { display: "flex", marginTop: "6px" } }>
+                            {/* ADD COMMENT */ }
+                            <div className="d-flex mt-3">
                                 <input
-                                    type="text"
+                                    className="form-control form-control-sm rounded-pill"
                                     placeholder="Add a comment..."
                                     value={ this.state.commentText[ post._id ] || "" }
                                     onChange={ ( e ) =>
-                                        this.handleCommentChange(
-                                            post._id,
-                                            e.target.value
-                                        )
+                                        this.handleCommentChange( post._id, e.target.value )
                                     }
-                                    style={ {
-                                        flex: 1,
-                                        border: "1px solid #e5e5e5",
-                                        borderRadius: "8px",
-                                        padding: "6px",
-                                        fontSize: "13px",
-                                    } }
                                 />
                                 <button
-                                    onClick={ () =>
-                                        this.handleAddComment( post._id )
-                                    }
-                                    style={ {
-                                        marginLeft: "6px",
-                                        border: "none",
-                                        background: "#000",
-                                        color: "#fff",
-                                        padding: "6px 10px",
-                                        borderRadius: "8px",
-                                        cursor: "pointer",
-                                    } }
+                                    className="btn btn-primary btn-sm rounded-pill ms-2"
+                                    onClick={ () => this.handleAddComment( post._id ) }
                                 >
                                     Post
                                 </button>
@@ -244,26 +215,20 @@ class Feed extends Component {
 
                 {/* LOAD MORE */ }
                 <button
+                    className="btn btn-outline-secondary w-100 rounded-pill mb-5"
                     onClick={ () =>
                         this.setState(
                             ( prev ) => ( { page: prev.page + 1 } ),
                             () => this.componentDidMount()
                         )
                     }
-                    style={ {
-                        width: "100%",
-                        padding: "10px",
-                        borderRadius: "10px",
-                        border: "1px solid #e5e5e5",
-                        background: "#fff",
-                        cursor: "pointer",
-                    } }
                 >
                     Load more
                 </button>
             </div>
         );
     }
+
 }
 
 export default Feed;

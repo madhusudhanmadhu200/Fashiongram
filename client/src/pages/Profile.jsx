@@ -40,6 +40,7 @@ class Profile extends Component {
 
     handleFollow = async () => {
         const token = localStorage.getItem( "token" );
+        const currentUser = this.context.user;
 
         const res = await fetch(
             `${ API_BASE }/users/${ this.state.user._id }/follow`,
@@ -55,8 +56,10 @@ class Profile extends Component {
             user: {
                 ...prev.user,
                 followers: data.following
-                    ? [ ...prev.user.followers, "x" ]
-                    : prev.user.followers.slice( 0, -1 ),
+                    ? [ ...prev.user.followers, currentUser._id ]
+                    : prev.user.followers.filter(
+                        ( id ) => id !== currentUser._id
+                    ),
             },
         } ) );
     };
@@ -67,6 +70,7 @@ class Profile extends Component {
         if ( !label || !link ) return;
 
         const token = localStorage.getItem( "token" );
+
         await fetch( `${ API_BASE }/posts/${ postId }/tag/${ tagIndex }`, {
             method: "PUT",
             headers: {
@@ -83,6 +87,7 @@ class Profile extends Component {
         if ( !window.confirm( "Delete this tag?" ) ) return;
 
         const token = localStorage.getItem( "token" );
+
         await fetch( `${ API_BASE }/posts/${ postId }/tag/${ tagIndex }`, {
             method: "DELETE",
             headers: { Authorization: `Bearer ${ token }` },
@@ -95,6 +100,7 @@ class Profile extends Component {
         if ( !window.confirm( "Delete this post permanently?" ) ) return;
 
         const token = localStorage.getItem( "token" );
+
         await fetch( `${ API_BASE }/posts/${ postId }`, {
             method: "DELETE",
             headers: { Authorization: `Bearer ${ token }` },
@@ -107,93 +113,88 @@ class Profile extends Component {
         const { user, posts, loading } = this.state;
         const currentUser = this.context.user;
 
-        if ( loading || !user ) return <p>Loading profile...</p>;
+        if ( loading || !user )
+            return <p className="text-center mt-5">Loading profile...</p>;
 
         const isOwnProfile =
             currentUser && currentUser._id === user._id;
 
+        const isFollowing =
+            currentUser && user.followers.includes( currentUser._id );
+
         return (
-            <div>
+            <div className="container mt-4" style={ { maxWidth: "720px" } }>
                 {/* PROFILE HEADER */ }
-                <div style={ { textAlign: "center", marginBottom: "20px" } }>
-                    <h2 style={ { marginBottom: "4px" } }>{ user.username }</h2>
-                    <p style={ { fontSize: "14px", color: "#777" } }>
-                        { user.followers.length } followers •{ " " }
-                        { user.following.length } following
-                    </p>
+                <div className="d-flex align-items-center mb-4">
+                    <div>
+                        <h3 className="mb-1">{ user.username }</h3>
+                        <div className="text-muted small">
+                            <b>{ user.followers.length }</b> followers •{ " " }
+                            <b>{ user.following.length }</b> following
+                        </div>
+                    </div>
 
                     { !isOwnProfile && (
                         <button
                             onClick={ this.handleFollow }
-                            style={ {
-                                background: "#000",
-                                color: "#fff",
-                                border: "none",
-                                padding: "8px 14px",
-                                borderRadius: "8px",
-                                cursor: "pointer",
-                            } }
+                            className={ `btn ms-auto ${ isFollowing
+                                    ? "btn-outline-secondary"
+                                    : "btn-primary"
+                                }` }
                         >
-                            Follow / Unfollow
+                            { isFollowing ? "Unfollow" : "Follow" }
                         </button>
                     ) }
                 </div>
 
-                {/* POSTS GRID */ }
+                <hr />
+
+                {/* POSTS */ }
+                { posts.length === 0 && (
+                    <p className="text-muted text-center">
+                        No posts yet
+                    </p>
+                ) }
+
                 { posts.map( ( post ) => (
                     <div
                         key={ post._id }
-                        style={ {
-                            border: "1px solid #e5e5e5",
-                            borderRadius: "14px",
-                            padding: "10px",
-                            marginBottom: "24px",
-                            background: "#fff",
-                        } }
+                        className="card mb-4 border-0 shadow-sm rounded-4"
                     >
                         { isOwnProfile && (
-                            <button
-                                onClick={ () => this.deletePost( post._id ) }
-                                style={ {
-                                    background: "#e63946",
-                                    color: "#fff",
-                                    border: "none",
-                                    padding: "6px 10px",
-                                    borderRadius: "8px",
-                                    fontSize: "12px",
-                                    cursor: "pointer",
-                                    marginBottom: "8px",
-                                } }
-                            >
-                                Delete Post
-                            </button>
+                            <div className="card-header bg-white border-0 text-end">
+                                <button
+                                    onClick={ () => this.deletePost( post._id ) }
+                                    className="btn btn-sm btn-danger"
+                                >
+                                    Delete Post
+                                </button>
+                            </div>
                         ) }
 
                         <img
                             src={ post.imageUrl }
                             alt=""
+                            className="w-100"
                             style={ {
-                                width: "100%",
-                                borderRadius: "12px",
-                                marginBottom: "8px",
+                                maxHeight: "460px",
+                                objectFit: "cover",
                             } }
                         />
 
-                        {/* CREATOR ANALYTICS */ }
+                        {/* ANALYTICS (OWNER ONLY) */ }
                         { isOwnProfile && (
-                            <div style={ { fontSize: "13px" } }>
-                                { ( !post.tags || post.tags.length === 0 ) && (
-                                    <p style={ { color: "#777" } }>
+                            <div className="card-body small">
+                                { !post.tags || post.tags.length === 0 ? (
+                                    <p className="text-muted">
                                         No tags added yet
                                     </p>
-                                ) }
-
-                                { post.tags && post.tags.length > 0 && (
+                                ) : (
                                     <>
                                         <p>
                                             <b>Total clicks:</b>{ " " }
                                             { post.tags.reduce(
-                                                ( sum, tag ) => sum + ( tag.clicks || 0 ),
+                                                ( sum, t ) => sum + ( t.clicks || 0 ),
                                                 0
                                             ) }
                                         </p>
@@ -215,15 +216,13 @@ class Profile extends Component {
                                         { post.tags.map( ( tag, i ) => (
                                             <div
                                                 key={ i }
-                                                style={ {
-                                                    display: "flex",
-                                                    justifyContent: "space-between",
-                                                    alignItems: "center",
-                                                    marginBottom: "6px",
-                                                } }
+                                                className="d-flex justify-content-between align-items-center mb-2"
                                             >
                                                 <span>
-                                                    <b>{ tag.label }</b> — { tag.clicks || 0 } clicks
+                                                    <b>{ tag.label }</b>{ " " }
+                                                    <span className="text-muted">
+                                                        ({ tag.clicks || 0 } clicks)
+                                                    </span>
                                                 </span>
 
                                                 <div>
@@ -231,10 +230,7 @@ class Profile extends Component {
                                                         onClick={ () =>
                                                             this.editTag( post._id, i, tag )
                                                         }
-                                                        style={ {
-                                                            marginRight: "6px",
-                                                            fontSize: "12px",
-                                                        } }
+                                                        className="btn btn-sm btn-outline-primary me-2"
                                                     >
                                                         Edit
                                                     </button>
@@ -242,9 +238,7 @@ class Profile extends Component {
                                                         onClick={ () =>
                                                             this.deleteTag( post._id, i )
                                                         }
-                                                        style={ {
-                                                            fontSize: "12px",
-                                                        } }
+                                                        className="btn btn-sm btn-outline-danger"
                                                     >
                                                         Delete
                                                     </button>
