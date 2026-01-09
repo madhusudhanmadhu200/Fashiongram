@@ -32,20 +32,46 @@ export function authFetchOptions( method = "GET", body = null ) {
 }
 
 export const forgotPassword = async ( email ) => {
-    const res = await fetch( `${ API_BASE }/auth/forgot-password`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify( { email } ),
-    } );
-    return res.json();
+    const res = await fetch(
+        `${ API_BASE }/auth/forgot-password`,
+        {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify( { email } ),
+        }
+    );
+
+    const data = await res.json();
+
+    if ( !res.ok ) {
+        throw new Error( data.message || "Failed to send OTP" );
+    }
+
+    return data;
 };
 
+
 export const resetPassword = async ( data ) => {
-    const res = await fetch( `${ API_BASE }/auth/reset-password`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify( data ),
-    } );
-    return res.json();
+    const res = await fetch(
+        `${ API_BASE }/auth/reset-password`,
+        {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify( data ),
+        }
+    );
+
+    const result = await res.json();
+
+    if ( !res.ok ) {
+        throw new Error( result.message || "Password reset failed" );
+    }
+
+    return result;
 };
+
 
