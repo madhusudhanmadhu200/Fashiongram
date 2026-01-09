@@ -9,6 +9,8 @@ import Login from "./pages/Login";
 import Feed from "./pages/Feed";
 import CreatePost from "./pages/CreatePost";
 import ProtectedRoute from "./components/ProtectedRoute";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
 
 import ProfileWrapper from "./pages/ProfileWrapper";
 
@@ -37,6 +39,9 @@ function Root() {
             {/* 🔓 PUBLIC ROUTES */ }
             <Route path="login" element={ <Login /> } />
             <Route path="register" element={ <Register /> } />
+            <Route path="/forgot-password" element={ <ForgotPassword /> } />
+            <Route path="/reset-password" element={ <ResetPassword /> } />
+
 
           </Route>
         </Routes>

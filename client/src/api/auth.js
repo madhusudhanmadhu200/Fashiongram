@@ -30,3 +30,22 @@ export function authFetchOptions( method = "GET", body = null ) {
     if ( body ) opts.body = JSON.stringify( body );
     return opts;
 }
+
+export const forgotPassword = async ( email ) => {
+    const res = await fetch( `${ API_BASE }/auth/forgot-password`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify( { email } ),
+    } );
+    return res.json();
+};
+
+export const resetPassword = async ( data ) => {
+    const res = await fetch( `${ API_BASE }/auth/reset-password`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify( data ),
+    } );
+    return res.json();
+};
+

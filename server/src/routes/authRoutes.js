@@ -2,6 +2,8 @@ import express from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import User from "../models/User.js";
+import sendEmail from "../utils/sendEmail.js";
+
 
 const router = express.Router();
 
@@ -68,5 +70,62 @@ router.post( "/login", async ( req, res ) => {
         res.status( 500 ).json( { message: "Error logging in" } );
     }
 } );
+//Forgot Password(Send OTP)
+
+router.post( "/forgot-password", async ( req, res ) => {
+    try {
+        const { email } = req.body;
+
+        const user = await User.findOne( { email } );
+        if ( !user )
+            return res.status( 404 ).json( { message: "User not found" } );
+
+        const otp = Math.floor( 100000 + Math.random() * 900000 ).toString();
+
+        user.resetOtp = await bcrypt.hash( otp, 10 );
+        user.resetOtpExpiry = Date.now() + 5 * 60 * 1000; // 5 mins
+        await user.save();
+
+        await sendEmail(
+            email,
+            "Fashiongram Password Reset OTP",
+            `Your OTP is ${ otp }. It is valid for 5 minutes.`
+        );
+
+        res.json( { message: "OTP sent to email" } );
+    } catch ( err ) {
+        res.status( 500 ).json( { message: "Failed to send OTP" } );
+    }
+} );
+
+//RESET PASSWORD(Verify OTP)
+
+router.post( "/reset-password", async ( req, res ) => {
+    try {
+        const { email, otp, newPassword } = req.body;
+
+        const user = await User.findOne( { email } );
+        if ( !user || !user.resetOtp )
+            return res.status( 400 ).json( { message: "Invalid request" } );
+
+        if ( user.resetOtpExpiry < Date.now() )
+            return res.status( 400 ).json( { message: "OTP expired" } );
+
+        const isValid = await bcrypt.compare( otp, user.resetOtp );
+        if ( !isValid )
+            return res.status( 400 ).json( { message: "Invalid OTP" } );
+
+        user.password = await bcrypt.hash( newPassword, 10 );
+        user.resetOtp = undefined;
+        user.resetOtpExpiry = undefined;
+        await user.save();
+
+        res.json( { message: "Password reset successful" } );
+    } catch ( err ) {
+        res.status( 500 ).json( { message: "Password reset failed" } );
+    }
+} );
+
+
 
 export default router;

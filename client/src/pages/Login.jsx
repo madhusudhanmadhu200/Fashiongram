@@ -108,6 +108,8 @@ class Login extends Component {
                             fontSize: "14px",
                         } }
                     />
+                    <Link to="/forgot-password">Forgot password?</Link>
+
 
                     {/* ERROR */ }
                     { this.state.error && (
