@@ -1,11 +1,11 @@
-import { Resend } from "resend";
+import sgMail from "@sendgrid/mail";
 
-const resend = new Resend( process.env.RESEND_API_KEY );
-
+sgMail.setApiKey( process.env.SENDGRID_API_KEY );
+console.log( "📧 EMAIL PROVIDER: SENDGRID" );
 const sendEmail = async ( to, subject, text ) => {
-    await resend.emails.send( {
-        from: "Fashiongram <onboarding@resend.dev>",
+    await sgMail.send( {
         to,
+        from: process.env.SENDGRID_SENDER,
         subject,
         text,
     } );
