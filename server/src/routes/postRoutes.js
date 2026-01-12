@@ -1,6 +1,7 @@
 import express from "express";
 import Post from "../models/Post.js";
 import protect from "../middleware/authMiddleware.js";
+import adminOnly from "../middleware/adminMiddleware.js";
 import upload from "../middleware/uploadMiddleware.js";
 import cloudinary from "../config/cloudinary.js";
 
@@ -287,6 +288,9 @@ router.delete( "/:id", protect, async ( req, res ) => {
         res.status( 500 ).json( { message: "Failed to delete post" } );
     }
 } );
-
+router.delete( "/:postId", protect, adminOnly, async ( req, res ) => {
+    await Post.findByIdAndDelete( req.params.postId );
+    res.json( { message: "Post deleted by admin" } );
+} );
 
 export default router;

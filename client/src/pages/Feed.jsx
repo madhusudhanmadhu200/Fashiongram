@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { API_BASE } from "../api/auth";
 import { Link } from "react-router-dom";
 import UserSearch from "../components/UserSearch";
+import { AuthContext } from "../context/AuthContext";
 
 
 class Feed extends Component {
@@ -13,6 +14,8 @@ class Feed extends Component {
         hoveredPost: null,
         page: 1,
     };
+    static contextType = AuthContext;
+
 
     async componentDidMount() {
         try {
@@ -104,9 +107,23 @@ class Feed extends Component {
             window.open( link, "_blank" );
         }
     };
+    deletePost = async ( postId ) => {
+        const token = localStorage.getItem( "token" );
+        await fetch( `${ API_BASE }/posts/${ postId }`, {
+            method: "DELETE",
+            headers: { Authorization: `Bearer ${ token }` },
+        } );
+
+        this.setState( prev => ( {
+            posts: prev.posts.filter( p => p._id !== postId )
+        } ) );
+    };
+
 
     render() {
         const { posts, loading, error, hoveredPost } = this.state;
+        const currentUser = this.context?.user;
+        const isAdmin = currentUser?.role === "admin";
 
         if ( loading ) return <p className="text-center mt-5">Loading feed...</p>;
         if ( error ) return <p className="text-center text-danger">{ error }</p>;
@@ -125,6 +142,14 @@ class Feed extends Component {
                             >
                                 { post.author.username }
                             </Link>
+                            { isAdmin && (
+                                <button
+                                    onClick={ () => this.deletePost( post._id ) }
+                                    className="btn btn-danger btn-sm"
+                                >
+                                    Delete
+                                </button>
+                            ) }
                         </div>
 
                         {/* IMAGE */ }

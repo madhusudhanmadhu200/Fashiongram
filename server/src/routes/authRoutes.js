@@ -37,6 +37,7 @@ router.post( "/register", async ( req, res ) => {
             _id: newUser._id,
             username: newUser.username,
             email: newUser.email,
+            role: newUser.role,
             token: generateToken( newUser._id ),
         } );
     } catch ( error ) {
@@ -58,12 +59,11 @@ router.post( "/login", async ( req, res ) => {
             return res.status( 401 ).json( { message: "Invalid credentials" } );
 
         res.json( {
+            _id: user._id,
+            username: user.username,
+            email: user.email,
+            role: user.role,
             token: generateToken( user._id ),
-            user: {
-                _id: user._id,
-                username: user.username,
-                email: user.email,
-            },
         } );
 
     } catch ( error ) {

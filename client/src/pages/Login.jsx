@@ -5,7 +5,7 @@ import { Navigate, Link } from "react-router-dom";
 
 class Login extends Component {
     static contextType = AuthContext;
-
+    
     state = {
         email: "",
         password: "",
@@ -13,6 +13,8 @@ class Login extends Component {
         error: null,
         redirect: false,
     };
+    
+
 
     handleChange = ( e ) => {
         this.setState( { [ e.target.name ]: e.target.value, error: null } );
@@ -30,7 +32,6 @@ class Login extends Component {
 
         try {
             const data = await loginUser( { email, password } );
-
             if ( data.token ) {
                 this.context.login( data );
                 this.setState( { redirect: true } );
@@ -45,9 +46,11 @@ class Login extends Component {
             this.setState( { loading: false } );
         }
     };
+    
 
     render() {
         if ( this.state.redirect ) return <Navigate to="/feed" replace />;
+        
 
         return (
             <div

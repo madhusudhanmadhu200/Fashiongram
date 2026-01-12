@@ -1,6 +1,7 @@
 // simple helper functions using fetch
 export const API_BASE = "https://fashiongram-api.onrender.com/api";
 
+
 export async function registerUser( { username, email, password } ) {
     const res = await fetch( `${ API_BASE }/auth/register`, {
         method: "POST",

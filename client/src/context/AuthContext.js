@@ -27,10 +27,19 @@ export class AuthProvider extends Component {
     }
 
     login = ( data ) => {
+        const user = {
+            _id: data._id,
+            username: data.username,
+            email: data.email,
+            role: data.role,
+        };
+
         localStorage.setItem( "token", data.token );
-        localStorage.setItem( "user", JSON.stringify( data.user ) );
-        this.setState( { user: data.user } );
+        localStorage.setItem( "user", JSON.stringify( user ) );
+
+        this.setState( { user } );
     };
+
 
     logout = () => {
         localStorage.removeItem( "token" );
