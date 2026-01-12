@@ -143,26 +143,58 @@ class Feed extends Component {
                             {/* TAG DOTS */ }
                             { hoveredPost === post._id &&
                                 post.tags.map( ( tag, i ) => (
-                                    <span
+                                    <div
                                         key={ i }
-                                        onClick={ () =>
-                                            this.handleTagClick( post._id, i, tag.link )
-                                        }
-                                        title={ tag.label }
                                         style={ {
                                             position: "absolute",
                                             top: `${ tag.y }%`,
                                             left: `${ tag.x }%`,
-                                            width: "14px",
-                                            height: "14px",
-                                            background: "#fff",
-                                            borderRadius: "50%",
-                                            border: "2px solid #000",
-                                            transform: "translate(-50%, -50%)",
                                             cursor: "pointer",
                                         } }
-                                    />
+                                        onClick={ () =>
+                                            this.handleTagClick( post._id, i, tag.link )
+                                        }
+                                    >
+                                        {/* DOT */ }
+                                        <div
+                                            style={ {
+                                                width: "14px",
+                                                height: "14px",
+                                                background: "#fff",
+                                                borderRadius: "50%",
+                                                border: "2px solid #000",
+                                                boxShadow: "0 3px 8px rgba(0,0,0,0.25)",
+                                            } }
+                                        />
+
+                                        {/* LABEL (CLICKABLE) */ }
+                                        <div
+                                            style={ {
+                                                position: "absolute",
+                                                top: "50%",
+                                                left: "18px",
+                                                transform: "translateY(-50%)",
+                                                background: "rgba(0, 0, 0, 0.75)",
+                                                color: "#fff",
+                                                padding: "6px 10px",
+                                                borderRadius: "999px",
+                                                fontSize: "12px",
+                                                fontWeight: 500,
+                                                letterSpacing: "0.2px",
+                                                whiteSpace: "nowrap",
+                                                boxShadow: "0 4px 12px rgba(0,0,0,0.25)",
+                                                backdropFilter: "blur(6px)",
+                                                WebkitBackdropFilter: "blur(6px)",
+                                                transition: "transform 0.15s ease, opacity 0.15s ease",
+                                            } }
+                                        >
+                                            { tag.label }
+                                        </div>
+                                    </div>
                                 ) ) }
+
+
+
                         </div>
 
                         {/* ACTIONS */ }
