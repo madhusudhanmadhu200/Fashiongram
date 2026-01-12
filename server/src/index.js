@@ -8,7 +8,7 @@ import authRoutes from "./routes/authRoutes.js";
 import protect from "./middleware/authMiddleware.js";
 import postRoutes from "./routes/postRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
-
+import adminRoutes from "./routes/adminRoutes.js";
 
 
 // Connect DB
@@ -33,6 +33,7 @@ app.use( "/api/test", testRoutes );
 app.use( "/api/auth", authRoutes );
 app.use( "/api/posts", postRoutes );
 app.use( "/api/users", userRoutes );
+app.use( "/api/admin", adminRoutes );
 
 
 app.get( "/health", ( req, res ) => {

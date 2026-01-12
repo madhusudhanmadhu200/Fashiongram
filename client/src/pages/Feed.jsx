@@ -3,7 +3,7 @@ import { API_BASE } from "../api/auth";
 import { Link } from "react-router-dom";
 import UserSearch from "../components/UserSearch";
 import { AuthContext } from "../context/AuthContext";
-
+import { authFetchOptions } from "../api/auth";
 
 class Feed extends Component {
     state = {
@@ -108,16 +108,27 @@ class Feed extends Component {
         }
     };
     deletePost = async ( postId ) => {
-        const token = localStorage.getItem( "token" );
-        await fetch( `${ API_BASE }/posts/${ postId }`, {
-            method: "DELETE",
-            headers: { Authorization: `Bearer ${ token }` },
-        } );
+        try {
+            const res = await fetch(
+                `${ API_BASE }/admin/posts/${ postId }`,
+                authFetchOptions( "DELETE" )
+            );
 
-        this.setState( prev => ( {
-            posts: prev.posts.filter( p => p._id !== postId )
-        } ) );
+            if ( !res.ok ) {
+                const err = await res.json();
+                alert( err.message || "Delete failed" );
+                return;
+            }
+
+            // ✅ Update UI ONLY after backend success
+            this.setState( prev => ( {
+                posts: prev.posts.filter( p => p._id !== postId )
+            } ) );
+        } catch ( err ) {
+            alert( "Server error while deleting post" );
+        }
     };
+
 
 
     render() {
