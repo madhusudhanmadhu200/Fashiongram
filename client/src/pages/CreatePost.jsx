@@ -86,6 +86,17 @@ class CreatePost extends Component {
                     <div className="card-body p-4">
                         <h4 className="text-center mb-3">Create Post</h4>
                         <p style={ { fontStyle: "italic" } }>Max Size: 5MB</p>
+                        <p
+                            style={ {
+                                fontSize: "12px",
+                                color: "#e74c3c",
+                                textAlign: "center",
+                                marginTop: "6px",
+                            } }
+                        >
+                            Only .jpeg / .jpg / .png images are accepted
+                        </p>
+
 
                         <form onSubmit={ this.handleSubmit }>
                             {/* IMAGE UPLOAD */ }
