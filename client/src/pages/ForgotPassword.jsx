@@ -147,9 +147,11 @@ class ForgotPassword extends Component {
                             </button>
                         </form>
                     ) }
+                    
 
                     { step === "RESET" && (
                         <form onSubmit={ this.resetPassword }>
+                            <p>*Please check SPAM folder also</p>
                             <input
                                 style={ styles.input }
                                 type="text"
