@@ -141,6 +141,27 @@ class Feed extends Component {
 
         return (
             <div className="container mt-4" style={ { maxWidth: "600px" } }>
+                <div
+                    style={ {
+                        maxWidth: "520px",
+                        margin: "12px auto 20px",
+                        padding: "12px 16px",
+                        backgroundColor: "#f9fafb",
+                        border: "1px solid #e5e7eb",
+                        borderRadius: "12px",
+                        textAlign: "center",
+                        fontSize: "14px",
+                        color: "#374151",
+                    } }
+                >
+                    <p style={ { margin: "6px 0" } }>
+                        <strong>📱 Mobile:</strong> Tap on the image to see the links
+                    </p>
+                    <p style={ { margin: "6px 0" } }>
+                        <strong>🖥️ Desktop:</strong> Hover on the image to see the links
+                    </p>
+                </div>
+
                 <UserSearch />
 
                 { posts.map( ( post ) => (
